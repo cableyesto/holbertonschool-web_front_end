@@ -62,11 +62,6 @@
   
     /** HEADER **/
     --header-padding: 4rem 0 0;
-    --header-logo-position: relative;
-    --header-logo-link-display: inline-block;
-    --header-logo-link-position: absolute;
-    --header-logo-link-top: -1rem;
-    --header-logo-link-left: 0;
   
     /** FOOTER **/
     --footer-padding: 5rem 0 1rem;
@@ -263,17 +258,11 @@ ul.row {
          background: transparent;
 }
   
-.header-logo {
-    position: var(--header-logo-position);
+.header-container {
+    display: flex;
+    justify-content: space-between;
 }
-  
-.header-logo a {
-    display: var(--header-logo-link-display);
-    position: var(--header-logo-link-position);
-    top: var(--header-logo-link-top);
-    left: var(--header-logo-link-left);
-}
-  
+
   /* Footer
       ============================= */
   
