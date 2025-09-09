@@ -1,0 +1,66 @@
+.btn-primary {
+    background-color: #E0003C;
+    border-color: #dc3545;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #BC1340;
+    border-color: #dc3545;
+}
+
+/* 
+Match the bootstrap css rule of .btn-primary:active 
+the .btn-primary:active have a lower specificity
+*/
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: #BC1340;
+    border-color: #dc3545;
+}
+
+.btn-outline-primary {
+    color: #E0003C;
+    border-color: #E0003C;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus
+{
+    background-color: #E0003C;
+    color: white !important;
+    border-color: #dc3545;
+}
+
+/* only display the red color for hover or focus, the match the layout */
+a:hover,
+a:focus,
+a[class*="text-"]:hover,
+a[class*="text-"]:focus
+{
+    color: #E0003C !important;
+}
+
+
+/* Card modification */
+.card {
+    border-radius: 1rem;
+}
+
+.card, .card-header, .card-footer {
+    border-color: #E0003C;
+}
+
+.card-header {
+    background-color: #E0003C;
+    color: white;
+}
+
+.card-header:first-child {
+    border-radius: 1rem 1rem 0 0;
+}
+
+/* text muted */
+.text-muted {
+    color: #8C8C8C !important;
+}
