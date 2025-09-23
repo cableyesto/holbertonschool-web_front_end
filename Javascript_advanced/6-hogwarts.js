@@ -1,25 +1,28 @@
 class studentHogwarts {
-    #privateScore = 0;
-    #name = null;
+    constructor() {
+        let privateScore = 0;
+        let name = null;
 
-    #changeScoreBy(points) {
-        this.#privateScore += points;
-    }
+        // Private method in closure
+        function changeScoreBy(points) {
+            privateScore += points;
+        }
 
-    setName(newName) {
-        this.#name = newName;
-    }
-
-    rewardStudent() {
-        this.#changeScoreBy(1);
-    }
-
-    penalizeStudent() {
-        this.#changeScoreBy(-1);
-    }
-
-    getScore() {
-        return `${this.#name}: ${this.#privateScore}`
+        // Return an object with public methods
+        return {
+            setName(newName) {
+                name = newName;
+            },
+            rewardStudent() {
+                changeScoreBy(1);
+            },
+            penalizeStudent() {
+                changeScoreBy(-1);
+            },
+            getScore() {
+                return `${name}: ${privateScore}`;
+            }
+        };
     }
 }
 
