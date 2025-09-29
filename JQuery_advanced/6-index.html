@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Task 6</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script type="application/javascript">
+    function createFamilyTree() {
+      $( "body" ).append( 
+        $(" <table>" ).append( 
+          $( "<thead>" ).append(
+            $( "<tr>" ).append(
+              $( "<td>" ).text("Firstname"),
+              $( "<td>" ).text("Lastname")
+            )
+          ),
+          $("<tbody>")
+        )
+      );
+    }
+
+    function addNewMember(firstName, lastName, position) {
+      let crossElement = $( "<span>" ).text( "\(x\)" );
+      crossElement.css("background-color", "orange");
+      crossElement.css("cursor", "pointer");
+      crossElement.click( function() {
+        $(this).parent().parent().remove();
+      } )
+
+      if (position === "before") {
+        $( "table > tbody" ).prepend(
+          $( "<tr>" ).append(
+            $( "<td>" ).text(firstName),
+            $( "<td>" ).text(lastName),
+            $( "<td>" ).append( crossElement )
+          )
+        );
+      }
+
+      if (position === "after") {
+        $( "table > tbody" ).append(
+          $( "<tr>" ).append(
+            $( "<td>" ).text(firstName),
+            $( "<td>" ).text(lastName),
+            $( "<td>" ).append( crossElement )
+          )
+        );
+      }
+    }
+
+    function createForm() {
+      $( "table" ).before(
+        $( "<input>", { type: "text" } ),
+        $( "<input>", { type: "text" } ),
+        $( "<select>").append( 
+          $("<option>", { value: "before" }).text("Before"),
+          $("<option>", { value: "after" }).text("After")
+        ),
+        $( "<input>", { type: "submit", value: "Submit" } ).on( "click", function() {
+          let firstInputValue = $( "input" ).first().val();
+          let secondInputValue = $( "input:nth-of-type(2)" ).val();
+          let selectValue = $( "select" ).val();
+          if (firstInputValue !== "" && secondInputValue !== "") {
+            addNewMember(firstInputValue, secondInputValue, selectValue);
+          }
+        })
+      );
+    }
+
+    createFamilyTree();
+    createForm();
+  </script>
+</html>
