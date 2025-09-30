@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Task 10</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script type="application/javascript">
+    function addPostRow(data) {
+      $( "body" ).append(
+        $( "<p>" ).append(
+          data.map(function(post) {
+            return $( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.title}`)
+          })
+        )
+      );
+    }
+
+    function listPosts() {
+      let queryOptions = {
+        url: "http://127.0.0.1:3000/posts",
+        type: "GET",
+        dataType: "json",
+      };
+
+      $.get(queryOptions)
+        .done(function(data, textStatus, jqXHR) {
+          if (jqXHR.status === 200) {
+            addPostRow(data);
+          }
+        })
+        .fail(function() {
+          alert("Server Error");
+        });
+    }
+
+    $(document).ready(function() {
+      if (typeof $.ajax === 'function') {
+        listPosts();
+      } else {
+        return;
+      }
+    });
+  </script>
+</html>
