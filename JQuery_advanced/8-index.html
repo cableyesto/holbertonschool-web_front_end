@@ -25,7 +25,7 @@
 
       for (let i = 0; i < (numberOfItems / itemsPerPage); i++) {
         $( "ul#pagination" ).append(
-          $( "<li>" ).text( i )
+          $( "<li>" ).text( i + 1 )
             .css("cursor", "pointer")
             .css("margin-left", "10px")
             .on( "click", function() {
