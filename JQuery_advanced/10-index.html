@@ -12,7 +12,7 @@
       $( "body" ).append(
         $( "<p>" ).append(
           data.map(function(post) {
-            return $( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.title}`)
+            return $( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.author}`)
           })
         )
       );
