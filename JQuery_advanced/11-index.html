@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Task 11</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script type="application/javascript">
+   function addPostRow(data) {
+      if (data.constructor === Array ) { // the data is an array from GET
+        $( "body" ).append(
+          $( "<p class='list'>" )
+            .css("display", "flex")
+            .css("flex-direction", "column")
+            .append(
+              data.slice().reverse().map(function(post) {
+                return $( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.author}`)
+              })
+            )
+        );
+      } else { // the data is an object from a POST
+        $( "body p.list" ).prepend(
+          $( "<span>" ).text(`Post created with id ${data.id}, title: ${data.title}, author: ${data.author}`)
+        );
+      }
+    }
+
+    function listPosts() {
+      let queryOptions = {
+        url: "http://127.0.0.1:3000/posts",
+        type: "GET",
+        dataType: "json",
+      };
+
+      $.get(queryOptions)
+        .done(function(data, textStatus, jqXHR) {
+          if (jqXHR.status === 200) {
+            addPostRow(data);
+          }
+        })
+        .fail(function() {
+          alert("Server Error");
+        });
+    }
+
+    function triggerSendFormOnEnter(event) {
+      const codeEnter = 13;
+      let code = event.keyCode || event.which;
+      if (code === codeEnter) {
+        event.preventDefault();
+        sendForm();
+      }
+    }
+
+    function buildForm() {
+      let submitButton = $("<input>", { type: "submit", value: "Submit" });
+      let formEl = $( "<form method='POST'>" ).append(
+        $( "<div>" ).append(
+          $( "<label>" ).attr( "label", "author" ).text( "Author" ).css("cursor", "pointer").on( "click" , function() {
+            $( "input#author" ).focus().select();
+          }),
+          $( "<input>", { type: "text", id: "author" } ).bind( "keypress", triggerSendFormOnEnter)
+        ),
+        $( "<div>" ).append(
+          $( "<label>" ).attr( "label", "title" ).text( "Title" ).css("cursor", "pointer").on( "click" , function() {
+            $( "textarea#title" ).focus().select();
+          }),
+          $( "<textarea>", { id: "title" } ).bind( "keypress", triggerSendFormOnEnter)
+        ),
+        submitButton.on( "click", function(event) {
+          event.preventDefault();
+          sendForm();
+        })
+      );
+      $( "body" ).append(formEl);
+    }
+
+    function sendForm() {
+      let formElem = $("form");
+      let paragraphElem = $("<p>").text("About to send the query to the API");
+      formElem.after(paragraphElem);
+
+      let inputAuthorValue = $( "input#author" ).val();
+      let inputTitleValue = $( "textarea#title" ).val();
+      let dataToSend = {
+        title: inputTitleValue,
+        author: inputAuthorValue,
+      };
+
+      let queryOptions = {
+        url: "http://127.0.0.1:3000/posts",
+        type: "POST",
+        dataType: "json",
+        data: dataToSend
+      };
+
+      $.ajax(queryOptions)
+        .done(function(data, textStatus, jqXHR) {
+          // use a timeout to display the message
+          setTimeout(() => {
+            paragraphElem.remove();
+            addPostRow(data);
+          }, 1000);
+        })
+        .fail(function() {
+          alert("Error sending the POST query");
+          $loadingMsg.remove();
+        });
+    }
+
+    $(document).ready(function() {
+      if (typeof $.ajax === 'function') {
+        listPosts();
+        buildForm();
+      } else {
+        return;
+      }
+    }); 
+  </script>
+</html>
