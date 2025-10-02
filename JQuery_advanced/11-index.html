@@ -11,18 +11,17 @@
    function addPostRow(data) {
       if (data.constructor === Array ) { // the data is an array from GET
         $( "body" ).append(
-          $( "<p class='list'>" )
-            .css("display", "flex")
-            .css("flex-direction", "column")
-            .append(
-              data.slice().reverse().map(function(post) {
-                return $( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.author}`)
-              })
+          data.slice().reverse().map(function(post) {
+            return $( "<p>" )
+              .append($( "<span>" ).text(`Post created with id ${post.id}, title: ${post.title}, author: ${post.author}`)
             )
+          })
         );
       } else { // the data is an object from a POST
-        $( "body p.list" ).prepend(
-          $( "<span>" ).text(`Post created with id ${data.id}, title: ${data.title}, author: ${data.author}`)
+        $( "body p" ).first().before(
+          $( "<p>" ).append(
+            $( "<span>" ).text(`Post created with id ${data.id}, title: ${data.title}, author: ${data.author}`)
+          )
         );
       }
     }
