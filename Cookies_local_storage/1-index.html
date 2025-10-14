@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Caching and Session</title>
+  </head>
+  <body>
+    <section>
+      <div>
+        <h1>Login to the website</h1>
+        <input type="text" id="firstname" placeholder="Firstname" />
+        <input type="text" id="email" placeholder="Email"/>
+        <button id="button_login">Log me in</button>
+      </div>
+      <div>
+        <h1>Cookies</h1>
+        <button id="button_show">Show the cookies</button>
+      </div>
+      </div>
+    </section>
+    <script>
+      let firstnameInputEl = document.getElementById("firstname");
+      let firstnameData = firstnameInputEl.value;
+      let emailInputEl = document.getElementById("email");
+      let emailData = emailInputEl.value;
+      let loginButtonEl = document.getElementById("button_login");
+      let showButtonEl = document.getElementById("button_show");
+
+      loginButtonEl.addEventListener("click", () => {
+        firstnameData = firstnameInputEl.value;
+        emailData = emailInputEl.value;
+        setCookies(firstnameData, emailData);
+      });
+
+      showButtonEl.addEventListener("click", () => {
+        showCookies();
+      });
+
+      function setCookies(firstname, email) {
+        let user = {
+          firstName: firstname,
+          email: email
+        };
+        let userJSON = JSON.stringify(user);
+        document.cookie = `userData=${userJSON}; max-age=864000`;
+      }
+
+      function showCookies() {
+        if (!(document.getElementById("cookie_display"))) {
+          const newParagraph = document.createElement("p");
+          newParagraph.setAttribute("id", "cookie_display");
+          const newContent = document.createTextNode(`Cookies: ${document.cookie}`);
+          newParagraph.appendChild(newContent);
+
+          showButtonEl.after(newParagraph);
+        }
+        let paragraphEl = document.getElementById("cookie_display");
+        paragraphEl.textContent = `Cookies: ${document.cookie}`;
+      }
+    </script>
+  </body>
+</html>
