@@ -35,7 +35,7 @@
             listEl.setAttribute("style", "cursor: pointer");
 
             listEl.addEventListener("click", e => {
-              const valueItem = e.originalTarget.textContent;
+              const valueItem = e.srcElement.textContent;
               addItemToCart(valueItem);
             })
 
