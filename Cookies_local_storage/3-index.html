@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Caching and Session</title>
+  </head>
+  <body>
+    <section>
+      <div id="form_container">
+        <form>
+          <h2>Login to the website</h2>
+          <input type="text" id="firstname" placeholder="Firstname" />
+          <input type="text" id="email" placeholder="Email"/>
+          <button id="button_login">Log me in</button>
+        </form>
+      </div>
+    </section>
+    <script>
+      let firstnameInputEl = document.getElementById("firstname");
+      let firstnameData = firstnameInputEl.value;
+      let emailInputEl = document.getElementById("email");
+      let emailData = emailInputEl.value;
+      let loginButtonEl = document.getElementById("button_login");
+      let formContainerEl = document.getElementById("form_container");
+
+      loginButtonEl.addEventListener("click", (e) => {
+        e.preventDefault();
+        firstnameData = firstnameInputEl.value;
+        emailData = emailInputEl.value;
+        setCookies(firstnameData, emailData);
+        hideForm();
+        showWelcomeMessageOrForm();
+      });
+
+      function setCookies(firstname, email) {
+        let user = {
+          firstName: firstname,
+          email: email
+        };
+        let userJSON = JSON.stringify(user);
+        document.cookie = `userData=${userJSON}; max-age=864000;`;
+      }
+
+      function getCookie(name) {
+        if (!document.cookie) {
+          return "";
+        }
+
+        let cookie = document.cookie;
+        let cookieJSONData = cookie.split(";")[0].split("=")[1];
+        let cookieJSONObject = JSON.parse(cookieJSONData);
+        let keyExists = Object.keys(cookieJSONObject).filter(key => key === name).length;
+        if (keyExists === 1) {
+          return cookieJSONObject[name];
+        } else {
+          return "";
+        }
+      }
+
+      function showCookies() {
+        const firstNameCookie = getCookie('firstName');
+        const emailCookie = getCookie('email');
+        if (!(document.getElementById("cookie_display"))) {
+          const newParagraph = document.createElement("p");
+          newParagraph.setAttribute("id", "cookie_display");
+          const newContent = document.createTextNode(`Email: ${emailCookie} - Firstname: ${firstNameCookie}`);
+          newParagraph.appendChild(newContent);
+
+          showButtonEl.after(newParagraph);
+        }
+
+        let paragraphEl = document.getElementById("cookie_display");
+        paragraphEl.textContent = `Email: ${emailData} - Firstname: ${firstNameCookie}`;
+      }
+
+      function hideForm() {
+        const isTitleDisplayed = document.querySelector("h1") ? true : false;
+        if (!isTitleDisplayed) {
+          formContainerEl.setAttribute("style", "display: none");
+        }
+      }
+
+      function showForm() {
+        const isTitleDisplayed = document.querySelector("h1") ? true : false;
+        if (isTitleDisplayed) {
+          formContainerEl.setAttribute("style", "display: block");
+        }
+      }
+
+      function deleteCookiesAndShowForm() {
+        if (document.cookie.split("=")[0] === "userData") {
+          document.cookie = 'userData={}; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
+        showForm();
+
+        let titleEl = document.querySelector('h1');
+        titleEl.remove();
+      }
+
+      function showWelcomeMessageOrForm() {
+        const firstNameCookie = getCookie('firstName');
+
+        if (document.cookie.split("=")[0] !== "userData") {
+          // user is not logged in
+          showForm();
+        } else {
+          const welcomeTitle = document.createElement("h1");
+          const titleContent = document.createTextNode(`Welcome ${firstNameCookie}`);
+          welcomeTitle.appendChild(titleContent);
+
+          const logoutSpan = document.createElement("a");
+          const spanContent = document.createTextNode(`(logout)`);
+          logoutSpan.appendChild(spanContent);
+          logoutSpan.setAttribute("style", "cursor: pointer; font-style: italic; margin-left: 10px;");
+
+          logoutSpan.addEventListener("click", function() {
+              deleteCookiesAndShowForm();
+          });
+
+          welcomeTitle.appendChild(logoutSpan);
+
+          document.body.appendChild(welcomeTitle);
+        }
+      }
+    </script>
+  </body>
+</html>
