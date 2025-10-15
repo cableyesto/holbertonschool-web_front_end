@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Caching and Session</title>
+  </head>
+  <body>
+    <script>
+      let availableItems = [
+        "Shampoo",
+        "Soap",
+        "Sponge",
+        "Water"
+      ];
+      if (!isLocalStorageAvailable()) {
+        alert("Sorry, your browser does not support Web storage. Try again with a better one");
+      } else {
+        createStore();
+        displayCart();
+      }
+
+      function addItemToCart(item) {
+        localStorage.setItem(item, true);
+      }
+
+      function createStore() {
+        if (!(document.getElementById("list_items"))) {
+          const newUnorderedList = document.createElement("ul");
+          newUnorderedList.setAttribute("id", "list_items");
+
+          availableItems.forEach(item => {
+            const listEl = document.createElement("li");
+            const newContent = document.createTextNode(item);
+            listEl.appendChild(newContent);
+            listEl.setAttribute("style", "cursor: pointer");
+
+            listEl.addEventListener("click", e => {
+              const valueItem = e.originalTarget.textContent;
+              addItemToCart(valueItem);
+            })
+
+            newUnorderedList.appendChild(listEl);
+          });
+
+          document.body.append(newUnorderedList);
+        }
+      }
+
+      function displayCart() {
+        const lengthStorage = localStorage.length;
+
+        if (lengthStorage > 0) {
+          const newParagraph = document.createElement("p");
+          const newContent = document.createTextNode(`You previously had ${lengthStorage} items in your cart`);
+          newParagraph.appendChild(newContent);
+          document.body.appendChild(newParagraph);
+        }
+      }
+
+      function isLocalStorageAvailable () {  
+        if (typeof localStorage !== 'undefined') {
+          try {
+            localStorage.setItem('feature_test', 'yes');
+
+            if (localStorage.getItem('feature_test') === 'yes') {
+              localStorage.removeItem('feature_test');
+              return true;
+            }
+          } catch (e) {
+            // localStorage is deactivated/not supported/not working as expected
+          }
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>
