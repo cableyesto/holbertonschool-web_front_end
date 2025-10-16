@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Caching and Session</title>
+  </head>
+  <body>
+    <script>
+      let availableItems = [
+        "Shampoo",
+        "Soap",
+        "Sponge",
+        "Water"
+      ];
+
+      if (!isSessionStorageAvailable()) {
+        alert("Sorry, your browser does not support Web storage. Try again with a better one");
+      } else {
+        createStore();
+        displayCart();
+      }
+
+      function getCartFromStorage() {
+        let cartSessionItem = sessionStorage.getItem("cart");
+        if (cartSessionItem) {
+          return JSON.parse(cartSessionItem);
+        } else {
+          return {};
+        }
+      }
+
+      function addItemToCart(item) {
+        let sessionObject = getCartFromStorage();
+        if (!sessionObject[item]) {
+          sessionObject[item] = 1;
+        } else {
+          sessionObject[item] += 1;
+        }
+        sessionStorage.setItem("cart", JSON.stringify(sessionObject));
+        displayCart();
+      }
+
+      function removeItemfromCart(item) {
+        let sessionObject = getCartFromStorage();
+        const newSessionObject = Object.fromEntries(
+          Object.entries(sessionObject).filter(key => key[0] !== item)
+        );
+        sessionStorage.setItem("cart", JSON.stringify(newSessionObject));
+        displayCart();
+      }
+
+      function clearCart() {
+        sessionStorage.setItem("cart", JSON.stringify({}));
+        displayCart();
+      }
+
+      function createStore() {
+        if (!(document.getElementById("list_items"))) {
+          const newUnorderedList = document.createElement("ul");
+          newUnorderedList.setAttribute("id", "list_items");
+
+          availableItems.forEach(item => {
+            const listEl = document.createElement("li");
+            const newContent = document.createTextNode(item);
+            listEl.appendChild(newContent);
+            listEl.setAttribute("style", "cursor: pointer");
+
+            listEl.addEventListener("click", e => {
+              const valueItem = e.srcElement.textContent;
+              addItemToCart(valueItem);
+            });
+            newUnorderedList.appendChild(listEl);
+          });
+
+          const titleProductsEl = document.createElement("h2");
+          const titleProductsContent = document.createTextNode("Available products:");
+          titleProductsEl.appendChild(titleProductsContent);
+
+          document.body.append(newUnorderedList);
+          // should be on the DOM to insert before
+          newUnorderedList.before(titleProductsEl);
+        }
+      }
+
+      function displayCart() {
+        if (!document.getElementById("cart_container")) {
+          const titleCartEl = document.createElement("h2");
+          const titleCartContent = document.createTextNode("Your cart:");
+          titleCartEl.appendChild(titleCartContent);
+
+          const divCartContainer = document.createElement("div");
+          divCartContainer.setAttribute("id", "cart_container");
+          divCartContainer.appendChild(titleCartEl);
+
+          const getDivCart = document.getElementById("cart");
+          if (!getDivCart) {
+            const divCartEl = document.createElement("div");
+            divCartEl.setAttribute("id", "cart");
+            divCartContainer.appendChild(divCartEl);
+          } else {
+            getDivCart.innerHTML = "";
+          }
+          document.body.append(divCartContainer);
+        }
+        updateCart();
+      }
+
+      function updateCart() {
+        const divCartEl = document.getElementById("cart");
+
+        if (!document.getElementById("cart_items")) {
+          const unorderedListCart = document.createElement("ul");
+          unorderedListCart.setAttribute("id", "cart_items");
+          divCartEl.appendChild(unorderedListCart);
+        }
+        const getUnorderedListCart = document.getElementById("cart_items");
+
+        let sessionObject = getCartFromStorage();
+        const isCartInSession = Object.keys(sessionObject).length > 0;
+
+        if (isCartInSession === true) {
+          // Refresh the cart display
+          getUnorderedListCart.innerHTML = "";
+
+          const listClearEl = document.createElement("li");
+          listClearEl.textContent = "Clear my cart";
+          listClearEl.addEventListener("click", clearCart);
+          getUnorderedListCart.appendChild(listClearEl);
+
+          Object.keys(sessionObject).forEach(key => {
+            const listEl = document.createElement("li");
+            listEl.textContent = `${key} X ${sessionObject[key]} `;
+
+            const spanEl = document.createElement("span");
+            spanEl.textContent = "(remove)"
+            spanEl.setAttribute("style", "cursor: pointer");
+            spanEl.addEventListener("click", e => {
+              const previousText = e.srcElement.previousSibling.textContent;
+              const valueItem = previousText.split(" X")[0];
+              removeItemfromCart(valueItem);
+            });
+
+            listEl.appendChild(spanEl);
+            getUnorderedListCart.appendChild(listEl);
+          });
+        } else {
+          // Refresh the cart display
+          getUnorderedListCart.innerHTML = "";
+
+          const emptyListEl = document.createElement("li");
+          emptyListEl.textContent = "Your cart is empty"
+
+          getUnorderedListCart.appendChild(emptyListEl);
+          divCartEl.appendChild(getUnorderedListCart);
+        }
+      }
+
+      function isSessionStorageAvailable () {
+        if (typeof sessionStorage !== 'undefined') {
+          try {
+            sessionStorage.setItem('feature_test', 'yes');
+
+            if (sessionStorage.getItem('feature_test') === 'yes') {
+              sessionStorage.removeItem('feature_test');
+              return true;
+            }
+          } catch (e) {
+            // sessionStorage is deactivated/not supported/not working as expected
+          }
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>
