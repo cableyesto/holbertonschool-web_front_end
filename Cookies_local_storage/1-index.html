@@ -37,12 +37,8 @@
       });
 
       function setCookies(firstname, email) {
-        let user = {
-          firstName: firstname,
-          email: email
-        };
-        let userJSON = JSON.stringify(user);
-        document.cookie = `userData=${userJSON}; max-age=864000`;
+        document.cookie = `firstname=${firstname}; max-age=864000`;
+        document.cookie = `email=${email}; max-age=864000`;
       }
 
       function showCookies() {
@@ -53,9 +49,11 @@
           newParagraph.appendChild(newContent);
 
           showButtonEl.after(newParagraph);
+        } else {
+          let paragraphEl = document.createElement("p");
+          paragraphEl.textContent = `Cookies: ${document.cookie}`;
+          document.body.appendChild(paragraphEl);
         }
-        let paragraphEl = document.getElementById("cookie_display");
-        paragraphEl.textContent = `Cookies: ${document.cookie}`;
       }
     </script>
   </body>
